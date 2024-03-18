@@ -173,21 +173,29 @@ def print_modules(course_id):
     else:
         print("No modules found.")
 
+#Function to get/print the "student digital binder" modules
+def print_student_modules(course_id):
+    modules = get_modules(course_id)
+    if modules:
+        print("Modules containing 'student' in their name:")
+        for module in modules:
+            if 'student digital' in module['name'].lower():
+                print(module['name'])
+    else:
+        print("No modules found for the course.")
+
 if __name__ == "__main__":
     # Example usage
     course_id = "207098"  # Replace with the ID of the course
-
-    print_modules(course_id)
-    print(get_assignment_groups(course_id)) 
+    print_student_modules(course_id)
     assignment_name = "Classwork"
     assignment_description = "This is a classwork assignment created via the Canvas API."
     due_at = None  # Due date in ISO 8601 format
     group_id = "932110"  # Replace with the ID of the assignment group
     published = True  # Whether the assignment is published or not
     module_id = "2618931"  # Replace with the ID of the module to which the assignment should be moved
-    for i in range(4):
-        create_assignment(course_id, assignment_name, assignment_description, due_at, group_id, published, points_possible=10, submission_type = "online_text_entry", module_id="2618931")
-    
+    # for i in range(4):
+    #     create_assignment(course_id, assignment_name, assignment_description, due_at, group_id, published, points_possible=10, submission_type = "online_text_entry", module_id="2618931")
     
     
    
