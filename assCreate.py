@@ -19,8 +19,9 @@ class CanvasAssignmentCreator(tk.Tk):
         self.course_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
         self.course_combobox = ttk.Combobox(self, state="readonly", width=40)
         self.course_combobox.grid(row=0, column=1, padx=5, pady=5, sticky="w")
-        self.course_combobox.bind("<<ComboboxSelected>>", self.load_modules)
-        self.course_combobox.bind("<<ComboboxSelected>>", self.load_groups)
+        
+        self.course_combobox.bind("<<ComboboxSelected>>", lambda event: (self.load_groups(), self.load_modules()))
+
         
         # Module
         self.module_label = ttk.Label(self, text="Module:")
@@ -97,6 +98,7 @@ class CanvasAssignmentCreator(tk.Tk):
         if course_id:
             # Use the Canvas API to fetch the modules for the selected course. get_modules is imported from canvastest.py
             modules = get_student_modules(course_id)
+            print(modules)
             # Extract module names from the fetched data
             module_names = list(modules.keys())
 
@@ -111,7 +113,7 @@ class CanvasAssignmentCreator(tk.Tk):
             self.module_combobox['values'] = []
     
     def load_groups(self, event=None):
-        # Fetch modules using the Canvas API based on the selected course
+        # Fetch assignment groups using the Canvas API based on the selected course
         selected_course = self.course_combobox.get()
 
         for key in courses.keys():

@@ -121,9 +121,10 @@ def get_student_modules(course_id):
 
 if __name__ == "__main__":
     # Example usage
-    course_id = "207098"  # Replace with the ID of the course
-    print(get_assignment_groups(course_id))
-    print(list(get_student_modules(course_id).keys()))
+    course_id = "207098"
+    courses = get_courses()  # Replace with the ID of the course
+    course_names = list(courses.keys())
+    print(get_student_modules(courses[course_names[3]]))
     assignment_name = "Classwork"
     assignment_description = "This is a classwork assignment created via the Canvas API."
     due_at = None  # Due date in ISO 8601 format
