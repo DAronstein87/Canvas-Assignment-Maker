@@ -20,7 +20,8 @@ class CanvasAssignmentCreator(tk.Tk):
         self.course_combobox = ttk.Combobox(self, state="readonly", width=40)
         self.course_combobox.grid(row=0, column=1, padx=5, pady=5, sticky="w")
         self.course_combobox.bind("<<ComboboxSelected>>", self.load_modules)
-
+        self.course_combobox.bind("<<ComboboxSelected>>", self.load_groups)
+        
         # Module
         self.module_label = ttk.Label(self, text="Module:")
         self.module_label.grid(row=1, column=0, padx=5, pady=5, sticky="w")

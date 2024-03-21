@@ -9,6 +9,7 @@ API_TOKEN = open("myAPIkey.txt", "r").read()
 headers = {
         "Authorization": f"Bearer {API_TOKEN}"
     }
+#returns a dictionary of course names: course IDs. All get functions return similar dictionaries.
 def get_courses():
     
     url = f"{BASE_URL}/courses"
@@ -44,9 +45,7 @@ def create_assignment(course_id, assignment_name, assignment_description, due_at
 
     # If submission type is 'online_text_entry', add 'submission_type' and 'online_text_entry_submissions' keys to payload
     if submission_type == 'online_text_entry':
-        payload['assignment']['submission_type'] = submission_type
-        payload['assignment']['online_text_entry_submissions'] = True
-        payload['assignment']['online_upload'] = True
+        payload['assignment']['submission_types'] = ["online_text_entry", "online_upload"]
 
     response = requests.post(url, headers=headers, json=payload)
     
