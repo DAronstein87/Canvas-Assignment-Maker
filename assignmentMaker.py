@@ -90,9 +90,7 @@ class CanvasAssignmentCreator(tk.Tk):
     def load_modules(self, event=None):
         # Fetch modules using the Canvas API based on the selected course
         selected_course = self.course_combobox.get()
-        print(selected_course)
         
-
         for key in courses.keys():
             if key == selected_course:
                 course_id = courses[key]
@@ -154,7 +152,7 @@ class CanvasAssignmentCreator(tk.Tk):
         assignment_name = self.assignment_name_entry.get()
         published = self.published_var.get()
         # Create the assignment on canvas
-        assignment_id = create_assignment(courses[course], assignment_name, "API created", due_date, groups[group], published, modules[module], 0, "online_text_entry", points_possible)
+        assignment_id = create_assignment(courses[course], assignment_name, "API created", due_date, groups[group], published, modules[module], 50, "online_text_entry", points_possible)
         # Workaround to display the right name. We have to change the name after creating the assignment,
         # and then it displays properly in student module. Otherwise, just shows 'assignment.'
         update_assignment_name(courses[course], assignment_id, assignment_name + " ")

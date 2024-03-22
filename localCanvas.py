@@ -1,0 +1,163 @@
+import tkinter as tk
+from tkinter import ttk
+from datetime import datetime
+from canvasAPIFunctions import *
+import json
+
+# Function to recreate dictionaries from text files. Assumes these files exist. Create them by first running dataSaver.py
+def load_data_from_files():
+    courses = {}
+    all_course_modules = {}
+    all_course_assignment_groups = {}
+
+    # Load data from text files
+    with open('courses.txt', 'r') as courses_file:
+        courses = json.load(courses_file)
+
+    with open('all_course_modules.txt', 'r') as modules_file:
+        all_course_modules = json.load(modules_file)
+
+    with open('all_course_assignment_groups.txt', 'r') as groups_file:
+        all_course_assignment_groups = json.load(groups_file)
+
+    return courses, all_course_modules, all_course_assignment_groups
+
+# Fetch courses using the Canvas API
+courses, all_course_modules, all_course_assignment_groups = load_data_from_files()
+
+
+class CanvasAssignmentCreator(tk.Tk):
+    def __init__(self):
+        super().__init__()
+
+        self.title("Canvas Assignment Creator")
+
+        # Course
+        self.course_label = ttk.Label(self, text="Course:")
+        self.course_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+        self.course_combobox = ttk.Combobox(self, state="readonly", width=40)
+        self.course_combobox.grid(row=0, column=1, padx=5, pady=5, sticky="w")
+        
+        self.course_combobox.bind("<<ComboboxSelected>>", lambda event: (self.load_modules(), self.load_groups()))
+
+        
+        # Module
+        self.module_label = ttk.Label(self, text="Module:")
+        self.module_label.grid(row=1, column=0, padx=5, pady=5, sticky="w")
+        self.module_combobox = ttk.Combobox(self, state="readonly", width=40)
+        self.module_combobox.grid(row=1, column=1, padx=5, pady=5, sticky="w")
+
+        # Assignment Group
+        self.group_label = ttk.Label(self, text="Assignment Group:")
+        self.group_label.grid(row=2, column=0, padx=5, pady=5, sticky="w")
+        self.group_combobox = ttk.Combobox(self, state="readonly", width=40)
+        self.group_combobox.grid(row=2, column=1, padx=5, pady=5, sticky="w")
+
+        # Due Date
+        self.due_label = ttk.Label(self, text="Due Date:")
+        self.due_label.grid(row=3, column=0, padx=5, pady=5, sticky="w")
+        self.due_entry = ttk.Entry(self, width=40)
+        self.due_entry.insert(0, datetime.now().strftime('%Y-%m-%dT%H:%M:%S'))
+        self.due_entry.grid(row=3, column=1, padx=5, pady=5, sticky="w")
+
+        # Points Possible
+        self.points_label = ttk.Label(self, text="Points Possible:")
+        self.points_label.grid(row=4, column=0, padx=5, pady=5, sticky="w")
+        self.points_entry = ttk.Entry(self, width=40)
+        self.points_entry.insert(0, '10')
+        self.points_entry.grid(row=4, column=1, padx=5, pady=5, sticky="w")
+
+        # Assignment_name
+        self.assignment_name_label = ttk.Label(self, text="Ass Name:")
+        self.assignment_name_label.grid(row=5, column=0, padx=5, pady=5, sticky="w")
+        self.assignment_name_entry = ttk.Entry(self, width=40)
+        self.assignment_name_entry.insert(0, 'Homework '+datetime.now().strftime('%Y-%m-%d'))
+        self.assignment_name_entry.grid(row=5, column=1, padx=5, pady=5, sticky="w")
+
+        # Published
+        self.published_var = tk.BooleanVar()
+        self.published_var.set(True)
+        self.published_checkbox = ttk.Checkbutton(self, text="Published", variable=self.published_var)
+        self.published_checkbox.grid(row=6, column=1, padx=5, pady=5, sticky="w")
+
+        # Create Assignment Button
+        self.create_button = ttk.Button(self, text="Create Assignment", command=self.make_assignment)
+        self.create_button.grid(row=7, column=1, padx=5, pady=5, sticky="w")
+
+        # Placeholder for Canvas API integration
+        self.load_courses()
+
+    def load_courses(self):
+        
+        # Extract the names of the courses
+        course_names = list(courses.keys())
+
+        # Populate the course combobox with the course names
+        self.course_combobox['values'] = course_names
+
+        # Select the first course by default if there are courses available
+        if course_names:
+            self.course_combobox.current(0)
+
+        # Load modules for the first course
+        self.load_modules()
+        self.load_groups()
+
+
+    def load_modules(self, event=None):
+        # Fetch modules using the Canvas API based on the selected course
+        selected_course = self.course_combobox.get()
+
+        if selected_course:
+            
+            # Extract module names from the fetched data
+            module_names = list(all_course_modules[selected_course])
+        
+            # Populate the module combobox with the module names
+            self.module_combobox['values'] = module_names
+
+            # Select the first module by default if there are modules available
+            if module_names:
+                self.module_combobox.current(0)
+        else:
+            # If course ID is not found, clear the module combobox
+            self.module_combobox['values'] = []
+    
+    def load_groups(self, event=None):
+        # Fetch assignment groups using the Canvas API based on the selected course
+        selected_course = self.course_combobox.get()
+
+        if selected_course:
+        
+            # Extract module names from the fetched data
+            group_names = list(all_course_assignment_groups[selected_course])
+
+            # Populate the module combobox with the module names
+            self.group_combobox['values'] = group_names
+
+            # Select the first module by default if there are modules available
+            if group_names:
+                self.group_combobox.current(0)
+        else:
+            # If course ID is not found, clear the module combobox
+            self.group_combobox['values'] = []
+
+    def make_assignment(self):
+        
+        # This method takes the input values and make API call to create assignment
+        course = self.course_combobox.get()
+        module = self.module_combobox.get()
+        group = self.group_combobox.get()
+        due_date = self.due_entry.get()
+        points_possible = self.points_entry.get()
+        assignment_name = self.assignment_name_entry.get()
+        published = self.published_var.get()
+        # Create the assignment on canvas
+        assignment_id = create_assignment(courses[course], assignment_name, "API created", due_date, all_course_assignment_groups[course][group], published, all_course_modules[course][module], 0, "online_text_entry", points_possible)
+        # Workaround to display the right name. We have to change the name after creating the assignment,
+        # and then it displays properly in student module. Otherwise, just shows 'assignment.'
+        update_assignment_name(courses[course], assignment_id, assignment_name + " ")
+        
+if __name__ == "__main__":
+    app = CanvasAssignmentCreator()
+    app.mainloop()
