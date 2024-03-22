@@ -3,7 +3,7 @@ import requests
 # Your Canvas LMS API base URL
 BASE_URL = "https://fusion.instructure.com/api/v1"
 
-# Your Canvas API token
+# Your Canvas API token. This file expects a 'myAPIkey.txt' file in the same directory, the contents of that file being your canvas API token/key
 API_TOKEN = open("myAPIkey.txt", "r").read()
 
 headers = {
