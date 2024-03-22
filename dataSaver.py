@@ -25,6 +25,6 @@ def save_data_to_files():
     with open('all_course_assignment_groups.txt', 'w') as groups_file:
         json.dump(all_course_assignment_groups, groups_file)
 
-
+save_data_to_files()
 
 
