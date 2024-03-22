@@ -102,7 +102,7 @@ class CanvasAssignmentCreator(tk.Tk):
         if course_id:
             # Use the Canvas API to fetch the modules for the selected course. get_modules is imported from canvastest.py
             modules = get_student_modules(course_id)
-            print(modules)
+            
             # Extract module names from the fetched data
             module_names = list(modules.keys())
 
@@ -129,7 +129,7 @@ class CanvasAssignmentCreator(tk.Tk):
         if course_id:
             # Use the Canvas API to fetch the modules for the selected course. get_modules is imported from canvastest.py
             groups = get_assignment_groups(course_id)
-            print(groups)
+        
             # Extract module names from the fetched data
             group_names = list(groups.keys())
 
