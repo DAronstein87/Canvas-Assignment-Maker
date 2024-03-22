@@ -80,6 +80,22 @@ def add_assignment_to_module(course_id, assignment_id, module_id, position = 1):
         print(f"Failed to add assignment to module: {response.status_code}")
         print(response.text)
 
+def update_assignment_name(course_id, assignment_id, new_assignment_name):
+    url = f"{BASE_URL}/courses/{course_id}/assignments/{assignment_id}"
+    payload = {
+        "assignment": {
+            "name": new_assignment_name
+        }
+    }
+
+    response = requests.put(url, headers=headers, json=payload)
+
+    if response.status_code == 200:
+        print("Assignment name updated successfully.")
+    else:
+        print(f"Failed to update assignment name: {response.status_code}")
+        print(response.text)
+
 def get_assignment_groups(course_id):
     
     url = f"{BASE_URL}/courses/{course_id}/assignment_groups"
@@ -121,16 +137,20 @@ def get_student_modules(course_id):
 
 if __name__ == "__main__":
     # Example usage
-    course_id = "207098"
-    courses = get_courses()  # Replace with the ID of the course
+    course_id = "220073"
+    assignment_id = "17968642"
+    courses = get_courses()
+    modules = get_student_modules(courses['Test math course'])
+    update_assignment_name(course_id, assignment_id, "new name")
     course_names = list(courses.keys())
-    print(get_student_modules(courses[course_names[3]]))
     assignment_name = "Classwork"
     assignment_description = "This is a classwork assignment created via the Canvas API."
     due_at = None  # Due date in ISO 8601 format
     group_id = "932110"  # Replace with the ID of the assignment group
     published = True  # Whether the assignment is published or not
     module_id = "2618931"  # Replace with the ID of the module to which the assignment should be moved
+
+
     
     
     

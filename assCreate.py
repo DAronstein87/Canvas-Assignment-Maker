@@ -5,6 +5,7 @@ from canvastest import *
 
 # Fetch courses using the Canvas API
 courses = get_courses()
+# We will reference these global variables later when user chooses a course
 modules = {}
 groups = {}
 
@@ -46,12 +47,14 @@ class CanvasAssignmentCreator(tk.Tk):
         self.points_label = ttk.Label(self, text="Points Possible:")
         self.points_label.grid(row=4, column=0, padx=5, pady=5, sticky="w")
         self.points_entry = ttk.Entry(self, width=40)
+        self.points_entry.insert(0, '10')
         self.points_entry.grid(row=4, column=1, padx=5, pady=5, sticky="w")
 
         # Assignment_name
         self.assignment_name_label = ttk.Label(self, text="Ass Name:")
         self.assignment_name_label.grid(row=5, column=0, padx=5, pady=5, sticky="w")
         self.assignment_name_entry = ttk.Entry(self, width=40)
+        self.assignment_name_entry.insert(0, 'Homework '+datetime.now().strftime('%Y-%m-%d'))
         self.assignment_name_entry.grid(row=5, column=1, padx=5, pady=5, sticky="w")
 
         # Published
@@ -95,6 +98,7 @@ class CanvasAssignmentCreator(tk.Tk):
                 course_id = courses[key]
         
         global modules
+
         if course_id:
             # Use the Canvas API to fetch the modules for the selected course. get_modules is imported from canvastest.py
             modules = get_student_modules(course_id)
@@ -120,7 +124,8 @@ class CanvasAssignmentCreator(tk.Tk):
             if key == selected_course:
                 course_id = courses[key]
         
-        global groups        
+        global groups
+
         if course_id:
             # Use the Canvas API to fetch the modules for the selected course. get_modules is imported from canvastest.py
             groups = get_assignment_groups(course_id)
@@ -139,29 +144,21 @@ class CanvasAssignmentCreator(tk.Tk):
             self.group_combobox['values'] = []
 
     def make_assignment(self):
-        # Placeholder method to create assignment using Canvas API
-        # This method would take the input values and make API call to create assignment
-        # Replace this with your actual Canvas API call to create assignment
         
+        # This method takes the input values and make API call to create assignment
         course = self.course_combobox.get()
         module = self.module_combobox.get()
         group = self.group_combobox.get()
-        
         due_date = self.due_entry.get()
         points_possible = self.points_entry.get()
         assignment_name = self.assignment_name_entry.get()
         published = self.published_var.get()
-        create_assignment(courses[course], assignment_name, "API created", due_date, groups[group], published, modules[module], 0, "online_text_entry", points_possible)
-        # Print the values (replace with actual API call)
-        print("Course:", course)
-        print("Module:", module)
-        print("Assignment Group:", group)
-        print("Due Date:", due_date)
-        print("Points Possible:", points_possible)
-        print("assignment_name:", assignment_name)
-        print("Published:", published)
+        # Create the assignment on canvas
+        assignment_id = create_assignment(courses[course], assignment_name, "API created", due_date, groups[group], published, modules[module], 0, "online_text_entry", points_possible)
+        # Workaround to display the right name. We have to change the name after creating the assignment,
+        # and then it displays properly in student module. Otherwise, just shows 'assignment.'
+        update_assignment_name(courses[course], assignment_id, assignment_name + " ")
         
-
 if __name__ == "__main__":
     app = CanvasAssignmentCreator()
     app.mainloop()
