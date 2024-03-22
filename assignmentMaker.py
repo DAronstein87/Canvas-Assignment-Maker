@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from datetime import datetime
-from canvastest import *
+from canvasAPIFunctions import *
 
 # Fetch courses using the Canvas API
 courses = get_courses()
