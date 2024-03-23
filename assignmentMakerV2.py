@@ -1,3 +1,6 @@
+#Run dataSaver.py before running this script. It will pull all of your course data from canvas and save in text files. 
+#You only need to run the dataSaver file once. Re-run when you have a new course.
+
 import tkinter as tk
 from tkinter import ttk
 from datetime import datetime
@@ -53,38 +56,45 @@ class CanvasAssignmentCreator(tk.Tk):
         self.group_combobox = ttk.Combobox(self, state="readonly", width=40)
         self.group_combobox.grid(row=2, column=1, padx=5, pady=5, sticky="w")
 
+        # Assignment Name
+        self.assignment_name_label = ttk.Label(self, text="Name:")
+        self.assignment_name_label.grid(row=3, column=0, padx=5, pady=5, sticky="w")
+        self.assignment_name_entry = ttk.Entry(self, width=40)
+        self.assignment_name_entry.insert(0, 'Homework ' + datetime.now().strftime('%Y-%m-%d'))
+        self.assignment_name_entry.grid(row=3, column=1, padx=5, pady=5, sticky="w")
+
+        # Assignment Description
+        self.assignment_description_label = ttk.Label(self, text="Description:")
+        self.assignment_description_label.grid(row=4, column=0, padx=5, pady=5, sticky="w")
+        self.assignment_description_entry = ttk.Entry(self, width=40)
+        self.assignment_description_entry.insert(0, 'Submit your work here')
+        self.assignment_description_entry.grid(row=4, column=1, padx=5, pady=5, sticky="w")
+
         # Due Date
         self.due_label = ttk.Label(self, text="Due Date:")
-        self.due_label.grid(row=3, column=0, padx=5, pady=5, sticky="w")
+        self.due_label.grid(row=5, column=0, padx=5, pady=5, sticky="w")
         self.due_entry = ttk.Entry(self, width=40)
         self.due_entry.insert(0, datetime.now().strftime('%Y-%m-%dT%H:%M:%S'))
-        self.due_entry.grid(row=3, column=1, padx=5, pady=5, sticky="w")
+        self.due_entry.grid(row=5, column=1, padx=5, pady=5, sticky="w")
 
         # Points Possible
         self.points_label = ttk.Label(self, text="Points Possible:")
-        self.points_label.grid(row=4, column=0, padx=5, pady=5, sticky="w")
+        self.points_label.grid(row=6, column=0, padx=5, pady=5, sticky="w")
         self.points_entry = ttk.Entry(self, width=40)
         self.points_entry.insert(0, '10')
-        self.points_entry.grid(row=4, column=1, padx=5, pady=5, sticky="w")
+        self.points_entry.grid(row=6, column=1, padx=5, pady=5, sticky="w")
 
-        # Assignment_name
-        self.assignment_name_label = ttk.Label(self, text="Ass Name:")
-        self.assignment_name_label.grid(row=5, column=0, padx=5, pady=5, sticky="w")
-        self.assignment_name_entry = ttk.Entry(self, width=40)
-        self.assignment_name_entry.insert(0, 'Homework '+datetime.now().strftime('%Y-%m-%d'))
-        self.assignment_name_entry.grid(row=5, column=1, padx=5, pady=5, sticky="w")
 
         # Published
         self.published_var = tk.BooleanVar()
         self.published_var.set(True)
         self.published_checkbox = ttk.Checkbutton(self, text="Published", variable=self.published_var)
-        self.published_checkbox.grid(row=6, column=1, padx=5, pady=5, sticky="w")
+        self.published_checkbox.grid(row=7, column=1, padx=5, pady=5, sticky="w")
 
         # Create Assignment Button
         self.create_button = ttk.Button(self, text="Create Assignment", command=self.make_assignment)
         self.create_button.grid(row=7, column=1, padx=5, pady=5, sticky="w")
 
-        # Placeholder for Canvas API integration
         self.load_courses()
 
     def load_courses(self):
@@ -151,9 +161,26 @@ class CanvasAssignmentCreator(tk.Tk):
         due_date = self.due_entry.get()
         points_possible = self.points_entry.get()
         assignment_name = self.assignment_name_entry.get()
+        assignment_description = self.assignment_description_entry.get()
         published = self.published_var.get()
+        
+        # Define a dictionary to map groups to emojis
+        group_emojis = {
+            "Independent Practice ": "✏️",
+            "Classwork": "✏️",
+            "Assessments ": "📕 ",
+            "Unit Assessments": "📕 ",
+            "Course Assessment": "📝"
+            # Add more groups and corresponding emojis as needed
+        }
+
+        # Get the emoji corresponding to the selected group
+        emoji = group_emojis[group]
+
+        # Add the emoji to the beginning of the assignment name
+        assignment_name = f"{emoji} {assignment_name}"
         # Create the assignment on canvas
-        assignment_id = create_assignment(courses[course], assignment_name, "API created", due_date, all_course_assignment_groups[course][group], published, all_course_modules[course][module], 0, "online_text_entry", points_possible)
+        assignment_id = create_assignment(courses[course], assignment_name, assignment_description, due_date, all_course_assignment_groups[course][group], published, all_course_modules[course][module], 0, "online_text_entry", points_possible)
         # Workaround to display the right name. We have to change the name after creating the assignment,
         # and then it displays properly in student module. Otherwise, just shows 'assignment.'
         update_assignment_name(courses[course], assignment_id, assignment_name + " ")
