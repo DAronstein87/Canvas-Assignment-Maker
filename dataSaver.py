@@ -34,8 +34,8 @@ class SpinnerWindow:
         self.root = root
         self.root.title("Status")
         # Set window size
-        window_width = 180  # Increase the width
-        window_height = 60  # Increase the height
+        window_width = 300  # Increase the width
+        window_height = 100  # Increase the height
         
         # Get screen width and height
         screen_width = self.root.winfo_screenwidth()

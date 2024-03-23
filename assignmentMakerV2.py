@@ -3,7 +3,7 @@
 
 import tkinter as tk
 from tkinter import ttk
-from datetime import datetime
+from datetime import datetime, timedelta
 from canvasAPIFunctions import *
 import json
 
@@ -40,10 +40,8 @@ class CanvasAssignmentCreator(tk.Tk):
         self.course_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
         self.course_combobox = ttk.Combobox(self, state="readonly", width=40)
         self.course_combobox.grid(row=0, column=1, padx=5, pady=5, sticky="w")
-        
         self.course_combobox.bind("<<ComboboxSelected>>", lambda event: (self.load_modules(), self.load_groups()))
 
-        
         # Module
         self.module_label = ttk.Label(self, text="Module:")
         self.module_label.grid(row=1, column=0, padx=5, pady=5, sticky="w")
@@ -74,7 +72,11 @@ class CanvasAssignmentCreator(tk.Tk):
         self.due_label = ttk.Label(self, text="Due Date:")
         self.due_label.grid(row=5, column=0, padx=5, pady=5, sticky="w")
         self.due_entry = ttk.Entry(self, width=40)
-        self.due_entry.insert(0, datetime.now().strftime('%Y-%m-%dT%H:%M:%S'))
+        # Calculate the date two days from today
+        two_days_from_today = datetime.now() + timedelta(days=2)
+        # Format the date as a string
+        formatted_date = two_days_from_today.strftime('%Y-%m-%dT%H:%M:%S')
+        self.due_entry.insert(0, formatted_date)
         self.due_entry.grid(row=5, column=1, padx=5, pady=5, sticky="w")
 
         # Points Possible
@@ -84,16 +86,22 @@ class CanvasAssignmentCreator(tk.Tk):
         self.points_entry.insert(0, '10')
         self.points_entry.grid(row=6, column=1, padx=5, pady=5, sticky="w")
 
+        # Position in Module
+        self.position_label = ttk.Label(self, text="Position in Module:")
+        self.position_label.grid(row=7, column=0, padx=5, pady=5, sticky="w")
+        self.position_entry = ttk.Entry(self, width=40)
+        self.position_entry.insert(0, '0')
+        self.position_entry.grid(row=7, column=1, padx=5, pady=5, sticky="w")
 
         # Published
         self.published_var = tk.BooleanVar()
         self.published_var.set(True)
         self.published_checkbox = ttk.Checkbutton(self, text="Published", variable=self.published_var)
-        self.published_checkbox.grid(row=7, column=1, padx=5, pady=5, sticky="w")
+        self.published_checkbox.grid(row=8, column=1, padx=5, pady=5, sticky="w")
 
         # Create Assignment Button
         self.create_button = ttk.Button(self, text="Create Assignment", command=self.make_assignment)
-        self.create_button.grid(row=7, column=1, padx=5, pady=5, sticky="w")
+        self.create_button.grid(row=9, column=1, padx=5, pady=5, sticky="w")
 
         self.load_courses()
 
@@ -160,27 +168,36 @@ class CanvasAssignmentCreator(tk.Tk):
         group = self.group_combobox.get()
         due_date = self.due_entry.get()
         points_possible = self.points_entry.get()
+        position = self.position_entry.get()
         assignment_name = self.assignment_name_entry.get()
         assignment_description = self.assignment_description_entry.get()
         published = self.published_var.get()
         
+        
         # Define a dictionary to map groups to emojis
         group_emojis = {
-            "Independent Practice ": "✏️",
+            "Independent Practice": "✏️",
             "Classwork": "✏️",
-            "Assessments ": "📕 ",
+            "Assessments": "📕 ",
             "Unit Assessments": "📕 ",
             "Course Assessment": "📝"
             # Add more groups and corresponding emojis as needed
         }
-
+        
         # Get the emoji corresponding to the selected group
-        emoji = group_emojis[group]
+        if "independent" in group.lower():
+            emoji = group_emojis["Independent Practice"]
+        elif "classwork" in group.lower():
+            emoji = group_emojis["Classwork"]
+        elif "assessment" in group.lower():
+            emoji = group_emojis["Assessments"]
+        elif "evidence of" in group.lower():
+            emoji = group_emojis["Independent Practice"]
 
         # Add the emoji to the beginning of the assignment name
         assignment_name = f"{emoji} {assignment_name}"
         # Create the assignment on canvas
-        assignment_id = create_assignment(courses[course], assignment_name, assignment_description, due_date, all_course_assignment_groups[course][group], published, all_course_modules[course][module], 0, "online_text_entry", points_possible)
+        assignment_id = create_assignment(courses[course], assignment_name, assignment_description, due_date, all_course_assignment_groups[course][group], published, all_course_modules[course][module], position, "online_text_entry", points_possible)
         # Workaround to display the right name. We have to change the name after creating the assignment,
         # and then it displays properly in student module. Otherwise, just shows 'assignment.'
         update_assignment_name(courses[course], assignment_id, assignment_name + " ")

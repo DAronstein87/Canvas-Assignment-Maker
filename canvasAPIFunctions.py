@@ -102,7 +102,7 @@ def get_assignment_groups(course_id):
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
         groups = response.json()
-        return {group['name']: group['id'] for group in groups}
+        return {group['name']: group['id'] for group in groups if "Assignment" not in group['name']}
     else:
         print(f"Failed to get assignment groups: {response.status_code}")
         return None
