@@ -34,8 +34,8 @@ class SpinnerWindow:
         self.root = root
         self.root.title("Status")
         # Set window size
-        window_width = 400  # Increase the width
-        window_height = 200  # Increase the height
+        window_width = 180  # Increase the width
+        window_height = 60  # Increase the height
         
         # Get screen width and height
         screen_width = self.root.winfo_screenwidth()
@@ -48,7 +48,7 @@ class SpinnerWindow:
         # Set the dimensions of the screen and where it is placed
         self.root.geometry('%dx%d+%d+%d' % (window_width, window_height, x, y))
         
-        self.label = tk.Label(root, text="Working...", font=("Arial", 14))
+        self.label = tk.Label(root, text="Loading course data...", font=("Arial", 14))
         self.label.pack(expand=True)  # Make the label expand to fill the space
         self.spinner = itertools.cycle(['-', '\\', '|', '/'])
         self.running = False
@@ -56,7 +56,7 @@ class SpinnerWindow:
     def update_spinner(self):
         while self.running:
             next_spinner = next(self.spinner)
-            self.label.config(text=f"Working... {next_spinner}")
+            self.label.config(text=f"Loading course data... {next_spinner}")
             time.sleep(0.1)
             self.root.update_idletasks()
 
