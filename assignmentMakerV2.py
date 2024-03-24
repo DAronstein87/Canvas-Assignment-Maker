@@ -95,14 +95,20 @@ class CanvasAssignmentCreator(tk.Tk):
         self.position_entry.grid(row=7, column=1, padx=5, pady=5, sticky="w")
 
         # Published
+        self.course_assessment = tk.BooleanVar()
+        self.course_assessment.set(False)
+        self.course_assessment_checkboxbox = ttk.Checkbutton(self, text="Final Assessment Emoji", variable=self.course_assessment)
+        self.course_assessment_checkboxbox.grid(row=8, column=1, padx=5, pady=5, sticky="w")
+        
+        # Published
         self.published_var = tk.BooleanVar()
         self.published_var.set(True)
         self.published_checkbox = ttk.Checkbutton(self, text="Published", variable=self.published_var)
-        self.published_checkbox.grid(row=8, column=1, padx=5, pady=5, sticky="w")
+        self.published_checkbox.grid(row=9, column=1, padx=5, pady=5, sticky="w")
 
         # Create Assignment Button
         self.create_button = ttk.Button(self, text="Create Assignment", command=self.make_assignment_thread)
-        self.create_button.grid(row=9, column=1, padx=5, pady=5, sticky="w")
+        self.create_button.grid(row=10, column=1, padx=5, pady=5, sticky="w")
 
         self.load_courses()
 
@@ -192,7 +198,9 @@ class CanvasAssignmentCreator(tk.Tk):
         }
         
         # Get the emoji corresponding to the selected group
-        if "independent" in group.lower():
+        if self.course_assessment.get():
+            emoji = group_emojis["Course Assessment"]
+        elif "independent" in group.lower():
             emoji = group_emojis["Independent Practice"]
         elif "classwork" in group.lower():
             emoji = group_emojis["Classwork"]
