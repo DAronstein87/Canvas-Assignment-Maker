@@ -6,6 +6,7 @@ from tkinter import ttk
 from datetime import datetime, timedelta
 from canvasAPIFunctions import *
 import json
+import threading
 
 # Function to recreate dictionaries from text files. Assumes these files exist. Create them by first running dataSaver.py
 def load_data_from_files():
@@ -100,7 +101,7 @@ class CanvasAssignmentCreator(tk.Tk):
         self.published_checkbox.grid(row=8, column=1, padx=5, pady=5, sticky="w")
 
         # Create Assignment Button
-        self.create_button = ttk.Button(self, text="Create Assignment", command=self.make_assignment)
+        self.create_button = ttk.Button(self, text="Create Assignment", command=self.make_assignment_thread)
         self.create_button.grid(row=9, column=1, padx=5, pady=5, sticky="w")
 
         self.load_courses()
@@ -159,9 +160,16 @@ class CanvasAssignmentCreator(tk.Tk):
         else:
             # If course ID is not found, clear the module combobox
             self.group_combobox['values'] = []
-
+    
+    def make_assignment_thread(self):
+        """
+        This function is a wrapper to run the assignment creation in a thread.
+        It starts a new thread to create an assignment using the provided parameters.
+        """
+        # Create and start a new thread for the assignment creation process
+        threading.Thread(target=self.make_assignment, daemon=True).start()
+    
     def make_assignment(self):
-        
         # This method takes the input values and make API call to create assignment
         course = self.course_combobox.get()
         module = self.module_combobox.get()
@@ -172,7 +180,6 @@ class CanvasAssignmentCreator(tk.Tk):
         assignment_name = self.assignment_name_entry.get()
         assignment_description = self.assignment_description_entry.get()
         published = self.published_var.get()
-        
         
         # Define a dictionary to map groups to emojis
         group_emojis = {
