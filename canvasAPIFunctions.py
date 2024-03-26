@@ -96,6 +96,36 @@ def update_assignment_name(course_id, assignment_id, new_assignment_name):
         print(f"Failed to update assignment name: {response.status_code}")
         print(response.text)
 
+def delete_assignment(course_id, assignment_id):
+    """
+    Delete an assignment in a Canvas course using the Canvas API.
+
+    Parameters:
+        course_id (int): The ID of the course containing the assignment.
+        assignment_id (int): The ID of the assignment to delete.
+    
+    Returns:
+        bool: True if the assignment is successfully deleted, False otherwise.
+    """
+    # Construct the API URL
+    url = f"{BASE_URL}/courses/{course_id}/assignments/{assignment_id}"
+    
+    try:
+        # Make the DELETE request to delete the assignment
+        response = requests.delete(url, headers=headers)
+        
+        # Check if the request was successful (status code 200)
+        if response.status_code == 200:
+            print(f"Assignment with ID {assignment_id} deleted successfully.")
+            return True
+        else:
+            print(f"Failed to delete assignment with ID {assignment_id}. Status code: {response.status_code}")
+            return False
+    except requests.exceptions.RequestException as e:
+        print(f"Error deleting assignment: {e}")
+        return False
+
+
 def get_assignment_groups(course_id):
     
     url = f"{BASE_URL}/courses/{course_id}/assignment_groups"
@@ -138,11 +168,7 @@ def get_student_modules(course_id):
 if __name__ == "__main__":
     # Example usage
     course_id = "220073"
-    assignment_id = "17968642"
-    courses = get_courses()
-    modules = get_student_modules(courses['Test math course'])
-    update_assignment_name(course_id, assignment_id, "new name")
-    course_names = list(courses.keys())
+    delete_assignment(220074, 18024701)
     assignment_name = "Classwork"
     assignment_description = "This is a classwork assignment created via the Canvas API."
     due_at = None  # Due date in ISO 8601 format
