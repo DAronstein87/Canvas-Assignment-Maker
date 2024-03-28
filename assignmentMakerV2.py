@@ -114,15 +114,8 @@ class CanvasAssignmentCreator(tk.Tk):
         self.separator.grid(row=11, column=0, columnspan=2, pady=10, sticky='ew')
 
         # Delete Assignments Button
-        self.delete_button = ttk.Button(self, text="Delete Assignment(s)", command=self.delete_assignments_thread)
+        self.delete_button = ttk.Button(self, text="Delete Previous Assignment", command=self.delete_assignments_thread)
         self.delete_button.grid(row=12, column=1, padx=5, pady=5, sticky="w")
-
-        # Number of Assignments to Delete Entry
-        self.num_assignments_label = ttk.Label(self, text="Number of Assignments to Delete:")
-        self.num_assignments_label.grid(row=13, column=0, padx=5, pady=5, sticky="w")
-        self.num_assignments_entry = ttk.Entry(self, width=10)
-        self.num_assignments_entry.insert(0, '1')
-        self.num_assignments_entry.grid(row=13, column=1, padx=5, pady=5, sticky="w")
 
         self.load_courses()
 
@@ -239,7 +232,7 @@ class CanvasAssignmentCreator(tk.Tk):
         This function is a wrapper to run the assignment deletion in a thread.
         It starts a new thread to delete one or more assignments
         """
-        # Create and start a new thread for the assignment creation process
+        # Create and start a new thread for the assignment deletion process
         threading.Thread(target=self.delete_assignments, daemon=True).start()
     
     def delete_assignments(self):
@@ -248,24 +241,13 @@ class CanvasAssignmentCreator(tk.Tk):
         """
         global recently_created_assignments
         try:
-            # Get the number of assignments to delete from the entry field
-            num_assignments_to_delete = int(self.num_assignments_entry.get())
-            
-            # Iterate through the recently_created_assignments list and delete the specified number of assignments
-            for i in range(num_assignments_to_delete):
-                if i < len(recently_created_assignments):
-                    course_id, assignment_id = recently_created_assignments[i]
-                    delete_assignment(course_id, assignment_id)
-                else:
-                    print("No more assignments to delete.")
-                    break
-            
-            recently_created_assignments = recently_created_assignments[num_assignments_to_delete:]
+            course_id, assignment_id = recently_created_assignments[0]
+            delete_assignment(course_id, assignment_id) 
+            recently_created_assignments = recently_created_assignments[1:]
             print(recently_created_assignments)
-        except ValueError:
-            print("Please enter a valid number of assignments to delete.")
-
-        
+        except:
+            print("No more assignments to delete.")
+       
 if __name__ == "__main__":
     app = CanvasAssignmentCreator()
     app.mainloop()
