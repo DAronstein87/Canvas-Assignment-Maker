@@ -35,6 +35,7 @@ class CanvasAssignmentCreator(tk.Tk):
         super().__init__()
 
         self.title("Canvas Assignment Creator")
+        # Potentially set a different background color.
         #self.configure(background="#dc9ef7")
         
         # Course
