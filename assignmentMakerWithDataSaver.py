@@ -113,7 +113,19 @@ class CanvasAssignmentCreator(tk.Tk):
         self.delete_button = ttk.Button(self, text="Delete Previous Assignment", command=self.delete_assignments_thread)
         self.delete_button.grid(row=12, column=1, padx=5, pady=5, sticky="w")
 
+        # Button to run dataSaver.py
+        self.data_saver_button = ttk.Button(self, text="Update Course Info", command=self.run_data_saver_thread)
+        self.data_saver_button.grid(row=13, column=1, padx=5, pady=5, sticky="w")
+
         self.load_courses()
+    
+    def run_data_saver(self):
+        # Function to run the dataSaver.py script
+        subprocess.run(["python", "dataSaver.py"])
+    
+    def run_data_saver_thread(self):
+        # Thread to run the dataSaver.py script
+        threading.Thread(target=self.run_data_saver, daemon=True).start()
 
     def load_courses(self):
         
