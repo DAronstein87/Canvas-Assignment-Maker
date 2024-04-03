@@ -30,6 +30,7 @@ def load_data_from_files():
 courses, all_course_modules, all_course_assignment_groups = load_data_from_files()
 
 recently_created_assignments = []
+recently_created_assignments_for_printing = []
 class CanvasAssignmentCreator(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -39,78 +40,85 @@ class CanvasAssignmentCreator(tk.Tk):
         #self.configure(background="#dc9ef7")
         # Course
         self.course_label = ttk.Label(self, text="Course:")
-        self.course_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+        self.course_label.grid(row=0, column=0, padx=3, pady=5, sticky="w")
         self.course_combobox = ttk.Combobox(self, state="readonly", width=40)
-        self.course_combobox.grid(row=0, column=1, padx=5, pady=5, sticky="w")
+        self.course_combobox.grid(row=0, column=1, padx=3, pady=5, sticky="w")
         self.course_combobox.bind("<<ComboboxSelected>>", lambda event: (self.load_modules(), self.load_groups()))
 
         # Module
         self.module_label = ttk.Label(self, text="Module:")
-        self.module_label.grid(row=1, column=0, padx=5, pady=5, sticky="w")
+        self.module_label.grid(row=1, column=0, padx=3, pady=5, sticky="w")
         self.module_combobox = ttk.Combobox(self, state="readonly", width=40)
-        self.module_combobox.grid(row=1, column=1, padx=5, pady=5, sticky="w")
+        self.module_combobox.grid(row=1, column=1, padx=3, pady=5, sticky="w")
 
         # Assignment Group
         self.group_label = ttk.Label(self, text="Assignment Group:")
-        self.group_label.grid(row=2, column=0, padx=5, pady=5, sticky="w")
+        self.group_label.grid(row=2, column=0, padx=3, pady=5, sticky="w")
         self.group_combobox = ttk.Combobox(self, state="readonly", width=40)
-        self.group_combobox.grid(row=2, column=1, padx=5, pady=5, sticky="w")
+        self.group_combobox.grid(row=2, column=1, padx=3, pady=5, sticky="w")
 
         # Assignment Name
         self.assignment_name_label = ttk.Label(self, text="Name:")
-        self.assignment_name_label.grid(row=3, column=0, padx=5, pady=5, sticky="w")
+        self.assignment_name_label.grid(row=3, column=0, padx=3, pady=5, sticky="w")
         self.assignment_name_entry = ttk.Entry(self, width=40)
         self.assignment_name_entry.insert(0, 'Homework ' + datetime.now().strftime('%Y-%m-%d'))
-        self.assignment_name_entry.grid(row=3, column=1, padx=5, pady=5, sticky="w")
+        self.assignment_name_entry.grid(row=3, column=1, padx=3, pady=5, sticky="w")
 
         # Assignment Description
         self.assignment_description_label = ttk.Label(self, text="Description:")
-        self.assignment_description_label.grid(row=4, column=0, padx=5, pady=5, sticky="w")
+        self.assignment_description_label.grid(row=4, column=0, padx=3, pady=5, sticky="w")
         self.assignment_description_entry = ttk.Entry(self, width=40)
         self.assignment_description_entry.insert(0, 'Submit your work here')
-        self.assignment_description_entry.grid(row=4, column=1, padx=5, pady=5, sticky="w")
+        self.assignment_description_entry.grid(row=4, column=1, padx=3, pady=5, sticky="w")
 
         # Due Date
         self.due_label = ttk.Label(self, text="Due Date:")
-        self.due_label.grid(row=5, column=0, padx=5, pady=5, sticky="w")
+        self.due_label.grid(row=5, column=0, padx=3, pady=5, sticky="w")
         self.due_entry = ttk.Entry(self, width=40)
         # Calculate the date two days from today
         two_days_from_today = datetime.now() + timedelta(days=2)
         # Format the date as a string
         formatted_date = two_days_from_today.strftime('%Y-%m-%dT%H:%M:%S')
         self.due_entry.insert(0, formatted_date)
-        self.due_entry.grid(row=5, column=1, padx=5, pady=5, sticky="w")
+        self.due_entry.grid(row=5, column=1, padx=3, pady=5, sticky="w")
 
         # Points Possible
         self.points_label = ttk.Label(self, text="Points Possible:")
-        self.points_label.grid(row=6, column=0, padx=5, pady=5, sticky="w")
+        self.points_label.grid(row=6, column=0, padx=3, pady=5, sticky="w")
         self.points_entry = ttk.Entry(self, width=40)
         self.points_entry.insert(0, '10')
-        self.points_entry.grid(row=6, column=1, padx=5, pady=5, sticky="w")
+        self.points_entry.grid(row=6, column=1, padx=3, pady=5, sticky="w")
 
         # Position in Module
         self.position_label = ttk.Label(self, text="Position in Module:")
-        self.position_label.grid(row=7, column=0, padx=5, pady=5, sticky="w")
+        self.position_label.grid(row=7, column=0, padx=3, pady=5, sticky="w")
         self.position_entry = ttk.Entry(self, width=40)
         self.position_entry.insert(0, '0')
-        self.position_entry.grid(row=7, column=1, padx=5, pady=5, sticky="w")
+        self.position_entry.grid(row=7, column=1, padx=3, pady=5, sticky="w")
 
         # Published
         self.published_var = tk.BooleanVar()
         self.published_var.set(True)
         self.published_checkbox = ttk.Checkbutton(self, text="Published", variable=self.published_var)
-        self.published_checkbox.grid(row=9, column=1, padx=5, pady=5, sticky="w")
+        self.published_checkbox.grid(row=9, column=1, padx=3, pady=5, sticky="w")
 
         # Create Assignment Button
         self.create_button = ttk.Button(self, text="Create Assignment", command=self.make_assignment_thread)
-        self.create_button.grid(row=10, column=1, padx=5, pady=5, sticky="w")
+        self.create_button.grid(row=10, column=1, padx=3, pady=5, sticky="w")
 
+        # Separator line
         self.separator = ttk.Separator(self, orient='horizontal')
-        self.separator.grid(row=11, column=0, columnspan=2, pady=10, sticky='ew')
+        self.separator.grid(row=11, column=0, columnspan=3, pady=5, sticky='ew')
 
+        # Recent Assignment Label
+        self.recent_assignment_label = ttk.Label(self, text="Recent Assignment: ")
+        self.recent_assignment_label.grid(row=12, column=0, padx=3, pady=5, sticky="w")
+        self.recent_assignment = ttk.Label(self, text="No Recent Assignments")
+        self.recent_assignment.grid(row=12, column=1, padx=3, pady=5, sticky="w")
+        
         # Delete Assignments Button
-        self.delete_button = ttk.Button(self, text="Delete Previous Assignment", command=self.delete_assignments_thread)
-        self.delete_button.grid(row=12, column=1, padx=5, pady=5, sticky="w")
+        self.delete_button = ttk.Button(self, text="Delete Recent Assignment", command=self.delete_assignments_thread)
+        self.delete_button.grid(row=13, column=1, padx=3, pady=5, sticky="w")
 
         self.load_courses()
 
@@ -215,8 +223,10 @@ class CanvasAssignmentCreator(tk.Tk):
         # and then it displays properly in student module. Otherwise, just shows 'assignment.'
         update_assignment_name(courses[course], assignment_id, assignment_name + " ")
         global recently_created_assignments
+        global recently_created_assignments_for_printing
         recently_created_assignments.insert(0, (course, assignment_id))
-        print(recently_created_assignments)
+        recently_created_assignments_for_printing.insert(0, (course, assignment_name))
+        self.recent_assignment.config(text = recently_created_assignments_for_printing[0][0]+ " " + recently_created_assignments_for_printing[0][1])
     
     def delete_assignments_thread(self):
         """
@@ -231,13 +241,15 @@ class CanvasAssignmentCreator(tk.Tk):
         Delete assignments based on the specified number of assignments to delete and the recently_created_assignments list.
         """
         global recently_created_assignments
+        global recently_created_assignments_for_printing
         try:
             course, assignment_id = recently_created_assignments[0]
             recently_created_assignments = recently_created_assignments[1:]
+            recently_created_assignments_for_printing = recently_created_assignments_for_printing[1:]
             delete_assignment(courses[course], assignment_id) 
-            print(recently_created_assignments)
+            self.recent_assignment.config(text = recently_created_assignments_for_printing[0][0]+ " " + recently_created_assignments_for_printing[0][1])
         except:
-            print("No more assignments to delete.")
+            self.recent_assignment.config(text = "No Recent Assignments")
        
 if __name__ == "__main__":
     app = CanvasAssignmentCreator()
