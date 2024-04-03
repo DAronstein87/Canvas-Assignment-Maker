@@ -218,10 +218,10 @@ class CanvasAssignmentCreator(tk.Tk):
         # Add the emoji to the beginning of the assignment name
         assignment_name_with_emoji = f"{emoji} {assignment_name}"
         # Create the assignment on canvas
-        assignment_id = create_assignment(courses[course], assignment_name_with_emoji, assignment_description, due_date, all_course_assignment_groups[course][group], published, all_course_modules[course][module], position, "online_text_entry", points_possible)
+        assignment_id = create_assignment(courses[course], assignment_name, assignment_description, due_date, all_course_assignment_groups[course][group], published, all_course_modules[course][module], position, "online_text_entry", points_possible)
         # Workaround to display the right name. We have to change the name after creating the assignment,
         # and then it displays properly in student module. Otherwise, just shows 'assignment.'
-        update_assignment_name(courses[course], assignment_id, assignment_name + " ")
+        update_assignment_name(courses[course], assignment_id, assignment_name_with_emoji)
         global recently_created_assignments
         global recently_created_assignments_for_printing
         recently_created_assignments.insert(0, (course, assignment_id))
