@@ -216,9 +216,9 @@ class CanvasAssignmentCreator(tk.Tk):
             emoji = group_emojis["Independent Practice"]
 
         # Add the emoji to the beginning of the assignment name
-        assignment_name = f"{emoji} {assignment_name}"
+        assignment_name_with_emoji = f"{emoji} {assignment_name}"
         # Create the assignment on canvas
-        assignment_id = create_assignment(courses[course], assignment_name, assignment_description, due_date, all_course_assignment_groups[course][group], published, all_course_modules[course][module], position, "online_text_entry", points_possible)
+        assignment_id = create_assignment(courses[course], assignment_name_with_emoji, assignment_description, due_date, all_course_assignment_groups[course][group], published, all_course_modules[course][module], position, "online_text_entry", points_possible)
         # Workaround to display the right name. We have to change the name after creating the assignment,
         # and then it displays properly in student module. Otherwise, just shows 'assignment.'
         update_assignment_name(courses[course], assignment_id, assignment_name + " ")
@@ -226,7 +226,7 @@ class CanvasAssignmentCreator(tk.Tk):
         global recently_created_assignments_for_printing
         recently_created_assignments.insert(0, (course, assignment_id))
         recently_created_assignments_for_printing.insert(0, (course, assignment_name))
-        self.recent_assignment.config(text = recently_created_assignments_for_printing[0][0]+ " " + recently_created_assignments_for_printing[0][1])
+        self.recent_assignment.config(text = recently_created_assignments_for_printing[0][0]+ ": " + recently_created_assignments_for_printing[0][1])
     
     def delete_assignments_thread(self):
         """
@@ -247,7 +247,7 @@ class CanvasAssignmentCreator(tk.Tk):
             recently_created_assignments = recently_created_assignments[1:]
             recently_created_assignments_for_printing = recently_created_assignments_for_printing[1:]
             delete_assignment(courses[course], assignment_id) 
-            self.recent_assignment.config(text = recently_created_assignments_for_printing[0][0]+ " " + recently_created_assignments_for_printing[0][1])
+            self.recent_assignment.config(text = recently_created_assignments_for_printing[0][0]+ ": " + recently_created_assignments_for_printing[0][1])
         except:
             self.recent_assignment.config(text = "No Recent Assignments")
        
