@@ -246,8 +246,8 @@ class CanvasAssignmentCreator(tk.Tk):
         global recently_created_assignments
         try:
             course_id, assignment_id = recently_created_assignments[0]
-            delete_assignment(course_id, assignment_id) 
             recently_created_assignments = recently_created_assignments[1:]
+            delete_assignment(course_id, assignment_id) 
             print(recently_created_assignments)
         except:
             print("No more assignments to delete.")
