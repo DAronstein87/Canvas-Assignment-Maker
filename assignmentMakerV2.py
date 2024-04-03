@@ -109,7 +109,7 @@ class CanvasAssignmentCreator(tk.Tk):
         self.separator.grid(row=11, column=0, columnspan=2, pady=10, sticky='ew')
 
         # Delete Assignments Button
-        self.delete_button = ttk.Button(self, text="Delete Previous Assignment", command=self.delete_assignments)
+        self.delete_button = ttk.Button(self, text="Delete Previous Assignment", command=self.delete_assignments_thread)
         self.delete_button.grid(row=12, column=1, padx=5, pady=5, sticky="w")
 
         self.load_courses()
@@ -233,8 +233,8 @@ class CanvasAssignmentCreator(tk.Tk):
         global recently_created_assignments
         try:
             course, assignment_id = recently_created_assignments[0]
-            delete_assignment(courses[course], assignment_id) 
             recently_created_assignments = recently_created_assignments[1:]
+            delete_assignment(courses[course], assignment_id) 
             print(recently_created_assignments)
         except:
             print("No more assignments to delete.")
