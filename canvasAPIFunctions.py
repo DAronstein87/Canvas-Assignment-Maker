@@ -160,7 +160,7 @@ def get_student_modules(course_id):
     student_modules = {}
     if modules:
         for key in modules.keys():
-            if 'student digital' in key.lower():
+            if 'binder' in key.lower():
                 student_modules[key] = modules[key]
 
     return student_modules    

@@ -7,7 +7,6 @@ from datetime import datetime, timedelta
 from canvasAPIFunctions import *
 import json
 import threading
-import subprocess
 
 # Function to recreate dictionaries from text files. Assumes these files exist. Create them by first running dataSaver.py
 def load_data_from_files():
@@ -110,7 +109,7 @@ class CanvasAssignmentCreator(tk.Tk):
         self.separator.grid(row=11, column=0, columnspan=2, pady=10, sticky='ew')
 
         # Delete Assignments Button
-        self.delete_button = ttk.Button(self, text="Delete Previous Assignment", command=self.delete_assignments_thread)
+        self.delete_button = ttk.Button(self, text="Delete Previous Assignment", command=self.delete_assignments)
         self.delete_button.grid(row=12, column=1, padx=5, pady=5, sticky="w")
 
         self.load_courses()
@@ -216,7 +215,7 @@ class CanvasAssignmentCreator(tk.Tk):
         # and then it displays properly in student module. Otherwise, just shows 'assignment.'
         update_assignment_name(courses[course], assignment_id, assignment_name + " ")
         global recently_created_assignments
-        recently_created_assignments.insert(0, (courses[course], assignment_id))
+        recently_created_assignments.insert(0, (course, assignment_id))
         print(recently_created_assignments)
     
     def delete_assignments_thread(self):
@@ -233,8 +232,8 @@ class CanvasAssignmentCreator(tk.Tk):
         """
         global recently_created_assignments
         try:
-            course_id, assignment_id = recently_created_assignments[0]
-            delete_assignment(course_id, assignment_id) 
+            course, assignment_id = recently_created_assignments[0]
+            delete_assignment(courses[course], assignment_id) 
             recently_created_assignments = recently_created_assignments[1:]
             print(recently_created_assignments)
         except:
