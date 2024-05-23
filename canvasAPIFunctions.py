@@ -140,13 +140,27 @@ def get_assignment_groups(course_id):
 
 def get_modules(course_id):
     
-    url = f"{BASE_URL}/courses/{course_id}/modules?include[]=items"
+    url = f"{BASE_URL}/courses/{course_id}/modules"
 
     response = requests.get(url, headers=headers)
 
     if response.status_code == 200:
         modules = response.json()
         return {module['name']: module['id'] for module in modules}
+    else:
+        print(f"Failed to get modules: {response.status_code}")
+        print(response.text)
+        return None
+
+def get_modules_with_items(course_id):
+    
+    url = f"{BASE_URL}/courses/{course_id}/modules?include[]=items"
+
+    response = requests.get(url, headers=headers)
+
+    if response.status_code == 200:
+        modules = response.json()
+        return modules
     else:
         print(f"Failed to get modules: {response.status_code}")
         print(response.text)
@@ -168,13 +182,11 @@ def get_student_modules(course_id):
 if __name__ == "__main__":
     # Example usage
     course_id = "220073"
-    delete_assignment(220074, 18024701)
-    assignment_name = "Classwork"
-    assignment_description = "This is a classwork assignment created via the Canvas API."
-    due_at = None  # Due date in ISO 8601 format
-    group_id = "932110"  # Replace with the ID of the assignment group
-    published = True  # Whether the assignment is published or not
-    module_id = "2618931"  # Replace with the ID of the module to which the assignment should be moved
+    courses = get_courses()
+    for key in courses.keys():
+        if "riven" in key.lower():
+            print(get_modules(courses[key]))
+            print(courses[key])
 
 
     
