@@ -169,7 +169,6 @@ def get_modules_with_items(course_id):
 
 #Functions to get/print the "student digital binder" modules
 def get_student_modules(course_id):
-    
     modules = get_modules(course_id)
     student_modules = {}
     if modules:
@@ -182,11 +181,13 @@ def get_student_modules(course_id):
 if __name__ == "__main__":
     # Example usage
     course_id = "220073"
-    courses = get_courses()
-    for key in courses.keys():
-        if "riven" in key.lower():
-            print(get_modules(courses[key]))
-            print(courses[key])
+    delete_assignment(220074, 18024701)
+    assignment_name = "Classwork"
+    assignment_description = "This is a classwork assignment created via the Canvas API."
+    due_at = None  # Due date in ISO 8601 format
+    group_id = "932110"  # Replace with the ID of the assignment group
+    published = True  # Whether the assignment is published or not
+    module_id = "2618931"  # Replace with the ID of the module to which the assignment should be moved
 
 
     
